@@ -1,0 +1,73 @@
+<!-- $Id: dish_list.htm 15898 2009-05-04 07:25:41Z liuhui $ -->
+
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="utils.js,listtable.js"}
+<!-- 品牌搜索 -->
+{include file="dishes_search.htm"}
+<form method="post" action="" name="listForm">
+<!-- start dish list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+  <table cellpadding="3" cellspacing="1">
+    <tr>
+      <th>菜品名称</th>
+      <th>类别</th>
+      <th>价格</th>
+      <th>主厨推荐</th>
+      <th>排序</th>
+      <th>图片</th>
+      <th>描述</th>
+      <th>操作</th>
+    </tr>
+    {foreach from=$dish_list item=dish}
+    <tr>
+      <td class="first-cell">
+        <span style="float:center">{$dish.name}</span>
+      </td>
+      <td>{$dish.cate}</td>
+      <td>{$dish.price}</td>
+      <td align="center"><img src="images/{if $dish.isRecommend}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_recommend', {$dish.id})" /></td>
+      <td>{$dish.sort}</td>
+      {if $dish.img }
+      <td><img src="images/disheimg/{$rest}/{$dish.img}"  style="height:60px;width:60px;"/></td>
+      {else}
+      <td><img src="images/disheimg/nopicture.gif"  style="height:60px;width:60px;"/></td>
+      {/if}
+      <td>{$dish.description}</td>
+      <td align="center">
+        <a href="dishes.php?act=edit&id={$dish.id}" title="{$lang.edit}">{$lang.edit}</a> |
+        <a href="javascript:;" onclick="listTable.remove({$dish.id}, '{$lang.drop_confirm}')" title="{$lang.edit}">{$lang.remove}</a> 
+      </td>
+    </tr>
+    {foreachelse}
+    <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+    {/foreach}
+    <tr>
+      <td align="right" nowrap="true" colspan="6">
+      {include file="page.htm"}
+      </td>
+    </tr>
+  </table>
+
+{if $full_page}
+<!-- end dish list -->
+</div>
+</form>
+
+<script type="text/javascript" language="javascript">
+  <!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  {/literal}
+  //-->
+</script>
+{include file="pagefooter.htm"}
+{/if}

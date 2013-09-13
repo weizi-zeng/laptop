@@ -163,9 +163,16 @@ elseif ($_REQUEST['act'] == 'updata')
     		$price.=  $k.":". $v.";";
     	}
     }
-
-    /* 处理图片 */
-    $img_name = basename($image->upload_image($_FILES['img'],'img'));
+    
+    if($_POST['del_img']){
+    	$img_name = "";
+    	//删除图片
+    	del_img($id);
+    	
+    }else {
+    	/* 处理图片 */
+    	$img_name = basename($image->upload_image($_FILES['img'],'img'));
+    }
     
     $param = "name = '$_POST[name]', cate_id='$_POST[cate_id]', isRecommend='$_POST[isRecommend]' , sort='$_POST[sort]'
     		, price='$price', description='$_POST[description]'";
@@ -329,5 +336,15 @@ function get_disheslist()
 function get_categorys(){
 	$sql = "select id,name from ".$GLOBALS['ecs']->table($_SESSION['admin_name'].'_category')." order by sort ";
 	return $GLOBALS['db']->getAll($sql);
+}
+
+function del_img($id){
+	/* 删除该品牌的图标 */
+	$sql = "SELECT img FROM " .$GLOBALS['ecs']->table($_SESSION['admin_name'].'_dishes'). " WHERE id = '$id'";
+	$img = $GLOBALS['db']->getOne($sql);
+	if (!empty($img))
+	{
+		@unlink(ROOT_PATH . '/admin/images/disheimg/'.$_SESSION['admin_name'].'/'.$img);
+	}
 }
 ?>

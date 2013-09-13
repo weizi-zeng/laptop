@@ -19,7 +19,7 @@
     <?php $_from = $this->_var['category_list']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('id', 'cate');if (count($_from)):
     foreach ($_from AS $this->_var['id'] => $this->_var['cate']):
 ?>
-    	<?php if (cate.id == dishe.cate_id): ?>
+    	<?php if ($this->_var['cate']['id'] == $this->_var['dishe']['cate_id']): ?>
     	<option value="<?php echo $this->_var['cate']['id']; ?>" selected="selected"><?php echo $this->_var['cate']['name']; ?></option>
     	<?php else: ?>
     	<option value="<?php echo $this->_var['cate']['id']; ?>"><?php echo $this->_var['cate']['name']; ?></option>
@@ -59,6 +59,8 @@
     <td><input type="file" name="img" />
     	<?php if ($this->_var['dishe']['img']): ?>
          <img width="200" height="200"  src="images/disheimg/<?php echo $this->_var['rest']; ?>/<?php echo $this->_var['dishe']['img']; ?>" border="0" />
+         <br>
+         <input type="checkbox" name="del_img" />删除此菜品的图片
         <?php else: ?>
           <img width="200" height="200" src="images/disheimg/nopicture.gif" />
         <?php endif; ?>

@@ -17,7 +17,7 @@
     <td>
     <select id="cate_id" name="cate_id" >
     {foreach from=$category_list key=id item=cate}
-    	{if cate.id eq dishe.cate_id}
+    	{if $cate.id eq $dishe.cate_id}
     	<option value="{$cate.id}" selected="selected">{$cate.name}</option>
     	{else }
     	<option value="{$cate.id}">{$cate.name}</option>
@@ -57,6 +57,8 @@
     <td><input type="file" name="img" />
     	{if $dishe.img}
          <img width="200" height="200"  src="images/disheimg/{$rest}/{$dishe.img}" border="0" />
+         <br>
+         <input type="checkbox" name="del_img" />删除此菜品的图片
         {else}
           <img width="200" height="200" src="images/disheimg/nopicture.gif" />
         {/if}

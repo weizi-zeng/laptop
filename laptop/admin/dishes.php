@@ -286,9 +286,11 @@ function get_disheslist()
         
         $where = " where 1 ";
         if($qname){
+        	$filter['name'] = $qname;
         	$where .= " and d.name like '%$qname%' ";
         }
         if($qcate){
+        	$filter['cate_id'] = $qcate;
         	$where .= " and d.cate_id=".$qcate." ";
         }
         

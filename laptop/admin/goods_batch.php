@@ -19,8 +19,8 @@ if ($_REQUEST['act'] == 'add')
     /* 取得可选语言 */
     $dir = opendir('../languages');
     $lang_list = array(
+    	'GB2312'    => $_LANG['charset']['zh_cn'],
         'UTF8'      => $_LANG['charset']['utf8'],
-        'GB2312'    => $_LANG['charset']['zh_cn'],
     );
     $smarty->assign('lang_list',     $lang_list);
 
@@ -49,9 +49,7 @@ elseif ($_REQUEST['act'] == 'upload')
     
     $data = file($_FILES['file']['tmp_name']);
     
-    if($_POST['data_cat'] == 'taobao')
-    {
-        $id_is = 0;
+      	$id_is = 0;
         foreach ($data AS $line)
         {
             // 跳过第一行
@@ -60,14 +58,18 @@ elseif ($_REQUEST['act'] == 'upload')
                 $line_number++;
                 continue;
             }
-
+            
             //转换编码格式
             $line = ecs_iconv($_POST['charset'], 'UTF8', $line);
+            print_r($line);echo '<br>';
+            continue;
             
             // 初始化
             $arr    = array();
             $line_list = explode(",",$line);
             
+            print_r($line_list);echo '<br>';
+            continue;
             
             
             $i=0;
@@ -109,8 +111,8 @@ elseif ($_REQUEST['act'] == 'upload')
             
             print_r($arr); echo '<br>';
 
-            $sql = "insert into ". $GLOBALS['ecs']->table('dishes') . " (name,cate_id,sort,price)values('$arr[name]','$arr[cate_id]','$arr[sort]','$arr[price]') ";
-            $GLOBALS['db']->query($sql);
+//             $sql = "insert into ". $GLOBALS['ecs']->table('dishes') . " (name,cate_id,sort,price)values('$arr[name]','$arr[cate_id]','$arr[sort]','$arr[price]') ";
+//             $GLOBALS['db']->query($sql);
             
             continue;
             
@@ -118,7 +120,6 @@ elseif ($_REQUEST['act'] == 'upload')
         }
         
         die("添加成功!");
-    }
     
 }
 

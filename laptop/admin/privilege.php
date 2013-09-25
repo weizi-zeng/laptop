@@ -224,7 +224,7 @@ elseif ($_REQUEST['act'] == 'insert')
     $password  = md5($_POST['password']);
     $role_id = '';
     
-    $action_list = 'dishes_manage,remove_back,category_manage';
+    $action_list = 'dishes_manage,remove_back,category_manage,goods_batch';
 
     $sql = "SELECT nav_list FROM " . $ecs->table('admin_user') . " WHERE action_list = 'all'";
     $row = $db->getRow($sql);

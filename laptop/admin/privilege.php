@@ -16,6 +16,8 @@
 define('IN_ECS', true);
 
 require(dirname(__FILE__) . '/includes/init.php');
+require(dirname(__FILE__) . '/includes/lib_registe.php');
+require(dirname(__FILE__) . '/includes/lib_pinyin.php');
 
 /* act操作项的初始化 */
 if (empty($_REQUEST['act']))
@@ -59,8 +61,43 @@ if ($_REQUEST['act'] == 'login')
         $smarty->assign('random',     mt_rand());
     }
 
-    $smarty->display('login.htm');
+    if(!empty($_REQUEST['registe'])){
+    	if($_REQUEST['registe']==1){
+    		$smarty->display('registe.htm');
+    		
+    	}else if($_REQUEST['registe']=="sign_in"){
+    		
+    		$result = registe($_REQUEST);//进行注册
+    		
+    		if(!empty($_REQUEST['source']) && $_REQUEST['source']=="ipad"){ //是否是ipad 移动客户端注册
+    			//结果用json表示
+    			print_r(json_encode($result));
+    			exit;
+    			
+    		}else { //PC机网站注册
+    			
+    			if($result['flag']==false){
+    				 
+    				sys_msg(sprintf($result['msg']));
+    				 
+    			}else {
+    				 //进行登录TODO
+    				
+    			}
+    		}
+    		
+    		print_r(json_encode($result));
+    		exit;
+    		
+    	}
+    	
+    	
+    }else {
+    	$smarty->display('login.htm');
+    }
+    
 }
+
 
 /*------------------------------------------------------ */
 //-- 验证登陆信息
@@ -710,49 +747,73 @@ function get_role_list()
     return $list;
 }
 
-/**
- * 创建餐厅对应的
- * 菜品表
- * 菜品类型表
- */
-function create_table($name){
-	delete_table($name);
-	
-	$sql = "CREATE TABLE  `laptop`.`ecs_".$name."_category` (
-		  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-		  `name` varchar(45) NOT NULL,
-		  `sort` int(10) unsigned NOT NULL DEFAULT '10',
-		  `memo` varchar(450) DEFAULT NULL,
-		  PRIMARY KEY (`id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-	
-	$GLOBALS['db']->query($sql);
-	
-	$sql = "CREATE TABLE  `laptop`.`ecs_".$name."_dishes` (
-	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	  `name` varchar(45) NOT NULL,
-	  `cate_id` int(10) unsigned NOT NULL,
-	  `isRecommend` tinyint(1) unsigned NOT NULL DEFAULT '0',
-	  `sort` int(10) unsigned NOT NULL DEFAULT '10',
-	  `img` varchar(45) DEFAULT NULL,
-	  `price` varchar(1024) DEFAULT NULL,
-	  `description` varchar(1024) DEFAULT NULL,
-	  PRIMARY KEY (`id`)
-	) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;";
-	
-	$GLOBALS['db']->query($sql);
-}
 
 /**
- * 删除餐厅对应的
- * 菜品表
- * 菜品类型表
+ * 注册账户
+ * //餐厅名称，餐厅地址、手机号码，邮箱，
  */
-function delete_table($name){
-	$sql = "drop table IF EXISTS ".$GLOBALS['ecs']->table($name.'_dishes');
-	$GLOBALS['db']->query($sql);
+function registe($param){
 	
-	$sql = "drop table IF EXISTS ".$GLOBALS['ecs']->table($name.'_category');
-	$GLOBALS['db']->query($sql);
+	$result = array("flag"=>1,"msg"=>"");//flag=0表示数据有问题， flag=1表示正常
+	//1、判断所有的输入参数是否都不为空
+	$result = valide($param);
+	if($result["flag"]==0){
+		return $result;
+	}
+	
+	/* 判断手机号码是否已经存在 */
+	$is_only = is_only("admin_user", "phone", stripslashes($param['phone']));
+
+	if (!$is_only)
+	{
+		return array("flag"=>0,"msg"=>"此电话号码已经注册");
+	}
+	
+	/* Email地址是否有重复 */
+	$is_only = is_only("admin_user", "email", stripslashes($param['email']));
+
+	if (!$is_only)
+	{
+		return array("flag"=>0,"msg"=>"此邮箱已经注册");
+	}
+	
+	//自动生成唯一的缩写名
+	$user_name = createName(pinyin($param['name']));
+	
+	/* 获取添加日期及密码 */
+	$add_time = gmtime();
+	
+	/**
+	* 创建餐厅对应的
+	* 菜品表
+	* 菜品类型表
+	*/
+	$result['user'] = addRestaurant($param, $user_name, $add_time);
+	
+	/**
+	 * 发送邮件，告知账户/密码
+	 */
+	return $result;
+}
+
+//判断所有的输入参数是否都不为空
+function  valide($param){
+	if(empty($param['name']) || $param['name']==''){
+		return array("flag"=>0,"msg"=>"餐厅名称不能为空");
+	}
+	
+	if(empty($param['address']) || $param['address']==''){
+		return array("flag"=>0,"msg"=>"餐厅地址不能为空");
+	}
+	
+	if(empty($param['phone']) || $param['phone']==''){
+		return array("flag"=>0,"msg"=>"手机号码不能为空");
+	}
+	
+	if(empty($param['email']) || $param['email']==''){
+		return array("flag"=>0,"msg"=>"邮箱不能为空");
+	}
+	
+	return array("flag"=>1,"msg"=>"");
 }
 ?>

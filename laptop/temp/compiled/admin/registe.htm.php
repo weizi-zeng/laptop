@@ -31,32 +31,35 @@ if (window.parent != window)
 </script>
 </head>
 <body style="background: #278296">
-<form method="post" action="privilege.php" name='theForm' onsubmit="return validate()">
+<form method="get" action="privilege.php" name='theForm' enctype="application/x-www-form-urlencoded" onsubmit="return validate()">
   <table cellspacing="0" cellpadding="0" style="margin-top: 100px" align="center">
   <tr>
     <td style="padding-left: 50px">
       <table>
       <tr>
-        <td>账户：</td>
-        <td><input type="text" name="username" /></td>
+        <td>餐厅名称：</td>
+        <td><input type="text" name="name" value="参谋天下"/></td>
       </tr>
       <tr>
-        <td>密码：</td>
-        <td><input type="password" name="password" /></td>
+        <td>餐厅地址：</td>
+        <td><input type="password" name="address" value="天心区侯家塘"/></td>
       </tr>
-      <tr><td colspan="2"><input type="checkbox" value="1" name="remember" id="remember" /><label for="remember">请保存我这次的登录信息。</label></td></tr>
       <tr>
-      <td colspan="2" align="center">
-      <!-- <input type="submit" value="重置密码" class="button" /> -->
-      
-      <input type="submit" value="进入管理中心" class="button" />
-      
-      <input type="button" value="去注册" class="button" onclick="registe();"/></td></tr>
+        <td>手机号码：</td>
+        <td><input type="text" name="phone" value="13272003649"/></td>
+      </tr>
+      <tr>
+        <td>邮箱：</td>
+        <td><input type="text" name="email" value="wz@oceanwing.com"/></td>
+      </tr>
+      <tr><td colspan="2"><input type="checkbox" value="1" name="remember" id="remember" /><label for="remember">保存信息。</label></td></tr>
+      <tr><td>&nbsp;</td><td><input type="submit" value="注册" class="button" /><input type="button" value="返回登陆" class="button" onclick="history.back();"/></td></tr>
       </table>
     </td>
   </tr>
   </table>
-  <input type="hidden" name="act" value="signin" />
+  <input type="hidden" name="act" value="login" />
+  <input type="hidden" name="registe" value="sign_in" />
 </form>
 <script language="JavaScript">
 <!--
@@ -68,13 +71,11 @@ if (window.parent != window)
   function validate()
   {
     var validator = new Validator('theForm');
-    validator.required('username', "账户不能为空！");
-    validator.required('password', "密码不能为空！");
+    validator.required('name', "餐厅名称不能为空！");
+    validator.required('address', "餐厅地址不能为空！");
+    validator.required('phone', "手机号码不能为空！");
+    validator.required('email', "邮箱不能为空！");
     return validator.passed();
-  }
-  
-  function registe(){
-	  window.location.href="<?php echo $this->_var['ADMIN_ROOT']; ?>privilege.php?act=login&registe=1";
   }
   
 //-->

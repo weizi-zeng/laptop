@@ -115,10 +115,14 @@ function addRestaurant($param, $user_name, $add_time){
 		           "VALUES ('".trim($param['name'])."','".$user_name."', '".trim($param['email'])."', '".md5($password)."', '$add_time', '$row[nav_list]', '$action_list', '$role_id', '".trim($param['phone'])."', '".trim($param['address'])."')";
 	
 	$GLOBALS['db']->query($sql);
-	$id = $GLOBALS['db']->Insert_ID();
+	$param['id'] = $GLOBALS['db']->Insert_ID();
 	
 	create_table($user_name);
 	
-	return array("id"=>$id,"name"=>$user_name,"password"=>$password, "restaurant"=>$param['name']);
+	$param['restaurant']= $param['name'];
+	$param['name']= $user_name;
+	$param['password']= $password;
+	
+	return $param;
 }
 ?>

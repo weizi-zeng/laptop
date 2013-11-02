@@ -95,6 +95,9 @@ define('IMAGE_DIR', $ecs->image_dir());
 /* 初始化数据库类 */
 require(ROOT_PATH . 'includes/cls_mysql.php');
 $db = new cls_mysql($db_host, $db_user, $db_pass, $db_name);
+require(ROOT_PATH . 'includes/cls_sqlsrv.php');
+$sqlsrv_db = new cls_sqlsrv($sqlsrv_db_host, $sqlsrv_db_user, $sqlsrv_db_pass, $sqlsrv_db_name);
+
 $db->set_disable_cache_tables(array($ecs->table('sessions'), $ecs->table('sessions_data'), $ecs->table('cart')));
 $db_host = $db_user = $db_pass = $db_name = NULL;
 

@@ -4,37 +4,29 @@
  *  rest服务
  */
 
-define('IN_ECS', true);
+// phpinfo();return ;
 
+define('IN_ECS', true);
 require(dirname(__FILE__) . '/includes/init.php');
 
-/*------------------------------------------------------ */
-//-- act 操作项的初始化
-/*------------------------------------------------------ */
-if (empty($_REQUEST['act']) || $_REQUEST['act'] != 'rest')
+
+echo "sql server connection test<br>";
+
+$sql = "select * from sysobjects where type='U' order by name";
+
+//执行有结果集的SQL语句
+$query = $sqlsrv_db->query($sql);
+
+
+
+while($row = $sqlsrv_db->fetch_array($query,SQLSRV_FETCH_NUMERIC))
+
 {
-    die("act errer") ;
+
+	echo $row[0]."-----".$row[1]."<br/>";
+
 }
 
-get_data();
-
-return;
 
 
-
-
-/*************************************************************************************
- * PRIVATE FUNCTION
- */
-function get_data(){
-	$sql = "select id,name from ".$GLOBALS['ecs']->table('category')." order by sort";
-	$rs = $GLOBALS['db']->getAll($sql);
-	foreach($rs as $k=>$r){
-		$sql = "select name from ".$GLOBALS['ecs']->table('dishes')." where cate_id=".$r['id']." order by sort";
-		$rs[$k]['dishes'] = $GLOBALS['db']->getAll($sql);
-	}
-	
-	print_r($rs);echo '<br><br><br><br>';
-// 	return json_encode($rs);
-}
 ?>

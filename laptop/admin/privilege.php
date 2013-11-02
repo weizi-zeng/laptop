@@ -793,6 +793,10 @@ function registe($param){
 	/**
 	 * 发送邮件，告知账户/密码
 	 */
+	if($result['flag']==1){
+		sendMail($result);
+	}
+	
 	return $result;
 }
 
@@ -815,5 +819,16 @@ function  valide($param){
 	}
 	
 	return array("flag"=>1,"msg"=>"");
+}
+
+/**
+* 发送邮件，告知账户/密码
+* 163免费邮客户端设置的POP3、SMTP、IMAP地址 
+* 
+* 
+*/
+function sendMail($result){
+	
+	send_mail($name, $email, $subject, $content);
 }
 ?>
